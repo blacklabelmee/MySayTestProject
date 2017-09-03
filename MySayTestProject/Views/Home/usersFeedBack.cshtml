@@ -1,0 +1,90 @@
+﻿@model MySayTestProject.Models.Topic
+@{
+    ViewBag.Title = "usersFeedBack";
+}
+
+
+<br />
+
+<h4><span class="tpc">Topic:</span> @Model.text</h4>
+<br />
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <!-- #region feedbacks -->
+
+        <p class="text-muted">user's feedback:</p>
+        <div class="feedBacks">
+            <!-- #region loading element styles  based on http://tobiasahlin.com/spinkit/ -->
+            <div class="sk-folding-cube loadingElement">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+            <!-- #endregion -->
+            @*listing the feedbacks*@
+            @foreach (var item in MvcApplication.feedBacks.Where(a => a.topicId == Model.id))
+            {
+                <div class="feedBack">
+                    <p class="title">
+                        @item.title
+                    </p>
+                    <p class="desc">
+                        @item.description
+                    </p>
+                    <p class="feedBackDate text-muted">9/2/2017</p>
+                </div>
+            }
+
+        </div>
+
+        <!-- #endregion -->
+
+    </div>
+    <div class="col-sm-6">
+        <!-- #region feedBack form -->
+
+        <div class="formWrapper">
+            <h4>Send us your feedback. we would be thankful!</h4>
+
+            @using (Ajax.BeginForm("addFeedBack", "Home", new AjaxOptions { HttpMethod = "Post", OnBegin = "ajaxStarted", OnComplete = "ajaxCompleted", OnFailure = "ajaxError", OnSuccess = "ajaxSuccess", }, new { @class = "feedbackForm" }))
+            {
+                @Html.AntiForgeryToken();
+                <input type="hidden" name="topicId" value="@Model.id" />
+                <input type="text" class="form-control" name="title" value="" placeholder="title" required />
+                <br />
+                <input type="email" class="form-control" name="email" value="" placeholder="Email" required />
+                <br />
+                <textarea name="description" class="form-control" rows="4" cols="50" placeholder="description" required></textarea>
+                <br />
+
+                <input type="submit" class="btn btn-default btn-sm" name="submit" value="Submit" />
+            }
+        </div>
+        <!-- #endregion -->
+
+    </div>
+
+</div>
+
+
+<hr />
+<!-- #region Topics summery  -->
+<div class="summery">
+    <p class="lbl">other posts</p>
+    @foreach (var item in MvcApplication.Topics)
+    {
+    <p class="summeryTopic truncate">@item.text</p>
+    <a href="@Url.Action("usersFeedBack","Home",new { topicId=item.id})" class="fbackCount btn btn-primary btn-xs">feedbacks: @MvcApplication.feedBacks.Where(f => f.topicId == item.id).Count()</a>
+
+    <br />
+    }
+</div>
+
+<!-- #endregion -->
+
+
+<script src="~/Scripts/jquery-3.1.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/usersFeedBackScripts.js"></script>

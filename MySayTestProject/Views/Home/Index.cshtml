@@ -1,0 +1,17 @@
+﻿@model IList<MySayTestProject.Models.Topic>
+@{
+    ViewBag.Title = "Home Page";
+}
+<div class="topics">
+    <h1>Topics</h1>
+    @foreach (var item in Model)
+    {
+        <div class="topic jumbotron">
+            <p class="topicText">@item.text</p>
+            <a href="@Url.Action("usersFeedBack","Home",new { topicId=item.id})" class="fbackCount btn btn-primary btn-sm">feedbacks: @MvcApplication.feedBacks.Where(f => f.topicId == item.id).Count()</a>
+        </div>
+    }
+</div>
+
+
+
